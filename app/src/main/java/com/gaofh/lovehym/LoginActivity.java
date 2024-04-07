@@ -40,14 +40,13 @@ public class LoginActivity extends BaseActivity{
                 SharedPreferences.Editor editor=pref.edit();
                 if (password.equals("123456")){
                     if(checkBox.isChecked()){
-                        boolean remember=true;
                         editor.putString("account",account);
                         editor.putString("password",password);
                         editor.putBoolean("isRemember",true);
                     }else {
                         editor.clear();
                     }
-                    editor.commit();
+                    editor.apply();
                     Intent intent=new Intent(LoginActivity.this,MainActivity.class);
                    startActivity(intent);
                     finish();
