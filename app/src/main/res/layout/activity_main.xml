@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/main_activity_background">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title"
+        android:gravity="center"
+        android:textSize="64sp"
+        android:textColor="@color/purple_500"
+        />
+    <Button
+        android:id="@+id/firstbotton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/firstbutton"
+        android:layout_below="@+id/title"
+        android:textSize="40sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_alignParentLeft="true"
+        />
+    <Button
+        android:id="@+id/secoundbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/secondbutton"
+        android:layout_toRightOf="@id/firstbotton"
+        android:layout_below="@+id/title"
+        android:textSize="40dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:typeface="normal" />
+    <Button
+        android:id="@+id/thirdbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/thirdbutton"
+        android:layout_toRightOf="@id/secoundbutton"
+        android:layout_below="@+id/title"
+        android:textSize="40sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:typeface="normal" />
+    <EditText
+        android:id="@+id/firstedittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/firstbotton"
+        android:gravity="left"
+        android:hint="@string/firstedit"
+        android:textSize="40dp"
+        android:maxLines="2"
+        />
+      <ImageView
+          android:id="@+id/imageView"
+          android:layout_width="360dp"
+          android:layout_height="320dp"
+          android:src="@drawable/baobao3"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentLeft="true"/>
+
+      <ImageView
+          android:layout_width="360dp"
+          android:layout_height="320dp"
+          android:src="@drawable/baobao2"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentBottom="true"
+          />
+
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">超爱宝宝</string>
+    <string name="firstbutton">永远</string>
+    <string name="secondbutton">都要</string>
+    <string name="thirdbutton">在一起</string>
+    <string name="firstedit">你是我的专属天使</string>
+    <string name="message_edit">开始聊天吧</string>
+    <string name="send_message">发送</string>
+    <string name="title">胡宝宝，一周年快乐</string>
+    <string name="first_fragment">这是左边碎片的button</string>
+    <string name="second_fragment">这是右边碎片的button</string>
+    <string name="third_fragment">这是右边碎片切换后的button</string>
+    <string name="title_activity_main">MainActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+
+</resources>
