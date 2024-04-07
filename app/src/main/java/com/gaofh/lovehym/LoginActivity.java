@@ -53,6 +53,7 @@ public class LoginActivity extends BaseActivity{
                     finish();
                 }else {
                     Toast.makeText(LoginActivity.this, "密码错误，请重试！", Toast.LENGTH_SHORT).show();
+                    passwordEdit.setText("");
                 }
 
             }
