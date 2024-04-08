@@ -3,10 +3,13 @@ package com.gaofh.lovehym;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
@@ -39,6 +42,8 @@ public class MainActivity extends BaseActivity {
      private EditText editText;
      private ImageView imageView;
      private MainBroadcastReceiver mainBroadcastReceive;
+     private MyDatabaseSQLiteHelper dbHelper;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,7 @@ public class MainActivity extends BaseActivity {
         thirdButton=(Button) findViewById(R.id.thirdbutton);
         title=(TextView) findViewById(R.id.title);
         editText=(EditText) findViewById(R.id.firstedittext);
+        dbHelper=new MyDatabaseSQLiteHelper(this,"BookStore.db",null,2);
         if(getData()!=null){
           //  editText.setText(getData());
            // editText.setSelection(getData().length());
@@ -75,9 +81,27 @@ public class MainActivity extends BaseActivity {
 //                title.setText(getstring);
 //                Intent intent=new Intent("com.gaofh.loveym.newsMainActivity_Action_START");
 //                startActivity(intent);
-                Intent intent=new Intent("com.gaofh.loveHym.ForcerOfflineReceiver");
-                intent.setPackage("com.gaofh.lovehym");
-                sendBroadcast(intent);
+//                Intent intent=new Intent("com.gaofh.loveHym.ForcerOfflineReceiver");
+//                intent.setPackage("com.gaofh.lovehym");
+//                sendBroadcast(intent);
+                SQLiteDatabase database=dbHelper.getWritableDatabase();
+                ContentValues values=new ContentValues();
+                //组装第一条数据
+                values.put("name","平凡的世界");
+                values.put("author","路遥");
+                values.put("pages",654);
+                values.put("price",34.6);
+                //向数据库插入第一条数据
+                database.insert("book",null,values);
+                values.clear();
+                //组装第二天数据
+                values.put("name","从你的全世界路过");
+                values.put("author","陈奕迅");
+                values.put("pages",99);
+                values.put("price",96.67);
+                //向数据库插入第二条数据
+                database.insert("book",null,values);
+                values.clear();
             }
         });
         //处理第二个按钮的点击事件
@@ -85,8 +109,12 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 //imageView.setImageResource(R.drawable.enemy_head_01);
-                Intent intent=new Intent("com.gaofh.lovehym.fragment_test_activity_Action_START");
-                startActivity(intent);
+//                Intent intent=new Intent("com.gaofh.lovehym.fragment_test_activity_Action_START");
+//                startActivity(intent);
+                /**
+                 *创建数据库book
+                 */
+                dbHelper.getWritableDatabase();
             }
         });
         //处理第三个按钮的点击事件
@@ -106,15 +134,21 @@ public class MainActivity extends BaseActivity {
                 /**
                  *点击通过sharedPreferences获取数据
                  */
-                SharedPreferences dataReader=getSharedPreferences("用户信息",MODE_PRIVATE);
-                StringBuilder stringBuilder=new StringBuilder();
-                String name=dataReader.getString("姓名","张三");
-                String sex=dataReader.getString("性别","女");
-                int age=dataReader.getInt("年龄",18);
-                stringBuilder.append(name);
-                stringBuilder.append(sex);
-                stringBuilder.append(age);
-                editText.setText(stringBuilder.toString());
+//                SharedPreferences dataReader=getSharedPreferences("用户信息",MODE_PRIVATE);
+//                StringBuilder stringBuilder=new StringBuilder();
+//                String name=dataReader.getString("姓名","张三");
+//                String sex=dataReader.getString("性别","女");
+//                int age=dataReader.getInt("年龄",18);
+//                stringBuilder.append(name);
+//                stringBuilder.append(sex);
+//                stringBuilder.append(age);
+//                editText.setText(stringBuilder.toString());
+                //更新数据库的数据
+                SQLiteDatabase database=dbHelper.getWritableDatabase();
+                ContentValues values=new ContentValues();
+                values.put("price",1000);
+                database.update("book",values,"name=?",new String[]{"平凡的世界"});
+                values.clear();
             }
         });
     }
