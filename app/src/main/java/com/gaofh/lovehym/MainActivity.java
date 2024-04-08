@@ -1,5 +1,6 @@
 package com.gaofh.lovehym;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -8,12 +9,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -38,11 +41,15 @@ public class MainActivity extends BaseActivity {
      private Button firstButton;
      private Button secondButton;
      private Button thirdButton;
+     private Button fourButton;
+     private Button fiveButton;
+     private Button sixButton;
      private TextView title;
      private EditText editText;
      private ImageView imageView;
      private MainBroadcastReceiver mainBroadcastReceive;
      private MyDatabaseSQLiteHelper dbHelper;
+     private SQLiteDatabase database;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +60,13 @@ public class MainActivity extends BaseActivity {
         firstButton=(Button)findViewById(R.id.firstbotton);
         secondButton=(Button)findViewById(R.id.secoundbutton);
         thirdButton=(Button) findViewById(R.id.thirdbutton);
+        fourButton=(Button) findViewById(R.id.fourbutton);
+        fiveButton=(Button) findViewById(R.id.fivebutton);
+        sixButton=(Button) findViewById(R.id.sixbutton);
         title=(TextView) findViewById(R.id.title);
         editText=(EditText) findViewById(R.id.firstedittext);
         dbHelper=new MyDatabaseSQLiteHelper(this,"BookStore.db",null,2);
+        database=dbHelper.getWritableDatabase();
         if(getData()!=null){
           //  editText.setText(getData());
            // editText.setSelection(getData().length());
@@ -84,7 +95,6 @@ public class MainActivity extends BaseActivity {
 //                Intent intent=new Intent("com.gaofh.loveHym.ForcerOfflineReceiver");
 //                intent.setPackage("com.gaofh.lovehym");
 //                sendBroadcast(intent);
-                SQLiteDatabase database=dbHelper.getWritableDatabase();
                 ContentValues values=new ContentValues();
                 //组装第一条数据
                 values.put("name","平凡的世界");
@@ -144,11 +154,41 @@ public class MainActivity extends BaseActivity {
 //                stringBuilder.append(age);
 //                editText.setText(stringBuilder.toString());
                 //更新数据库的数据
-                SQLiteDatabase database=dbHelper.getWritableDatabase();
                 ContentValues values=new ContentValues();
                 values.put("price",1000);
                 database.update("book",values,"name=?",new String[]{"平凡的世界"});
                 values.clear();
+            }
+        });
+        //处理第四个按钮的点击事件
+        fourButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //把价格超过500的数据删掉
+                database.delete("book","price>?",new String[]{"500"});
+            }
+        });
+        //处理第五个按钮的点击事件
+        fiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //查询数据
+                Cursor cursor=database.query("book",null,null,null,null,null,null);
+                if(cursor.moveToFirst()){
+                    do {
+                        //遍历cursor，取出数据
+
+                       @SuppressLint("Range") String name=cursor.getString(cursor.getColumnIndex("name"));
+                        @SuppressLint("Range") String author=cursor.getString(cursor.getColumnIndex("author"));
+                        @SuppressLint("Range") double price=cursor.getDouble(cursor.getColumnIndex("price"));
+                        @SuppressLint("Range") int pages=cursor.getInt(cursor.getColumnIndex("pages"));
+                        Log.d("MainActivity","书名是"+name);
+                        Log.d("MainActivity","作者是"+author);
+                        Log.d("MainActivity","价格是"+price);
+                        Log.d("MainActivity","总书页是"+pages);
+                    }while (cursor.moveToNext());
+                }
+                cursor.close();
             }
         });
     }

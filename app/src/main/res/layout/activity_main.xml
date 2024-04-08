@@ -47,6 +47,39 @@
         android:textColor="@color/black"
         android:gravity="center"
         android:typeface="normal" />
+    <Button
+        android:id="@+id/fourbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/thirdbutton"
+        android:layout_toRightOf="@id/thirdbutton"
+        android:layout_below="@+id/title"
+        android:textSize="40sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:typeface="normal" />
+    <Button
+        android:id="@+id/fivebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/thirdbutton"
+        android:layout_toRightOf="@id/fourbutton"
+        android:layout_below="@+id/title"
+        android:textSize="40sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:typeface="normal" />
+    <Button
+        android:id="@+id/sixbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/thirdbutton"
+        android:layout_toRightOf="@id/fivebutton"
+        android:layout_below="@+id/title"
+        android:textSize="40sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:typeface="normal" />
     <EditText
         android:id="@+id/firstedittext"
         android:layout_width="match_parent"
