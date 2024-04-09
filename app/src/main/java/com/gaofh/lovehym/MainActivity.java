@@ -65,7 +65,7 @@ public class MainActivity extends BaseActivity {
         sixButton=(Button) findViewById(R.id.sixbutton);
         title=(TextView) findViewById(R.id.title);
         editText=(EditText) findViewById(R.id.firstedittext);
-        dbHelper=new MyDatabaseSQLiteHelper(this,"BookStore.db",null,2);
+        dbHelper=new MyDatabaseSQLiteHelper(this,"BookStore.db",null,3);
         database=dbHelper.getWritableDatabase();
         if(getData()!=null){
           //  editText.setText(getData());
@@ -101,6 +101,7 @@ public class MainActivity extends BaseActivity {
                 values.put("author","路遥");
                 values.put("pages",654);
                 values.put("price",34.6);
+                values.put("category_id",23);
                 //向数据库插入第一条数据
                 database.insert("book",null,values);
                 values.clear();
@@ -109,6 +110,7 @@ public class MainActivity extends BaseActivity {
                 values.put("author","陈奕迅");
                 values.put("pages",99);
                 values.put("price",96.67);
+                values.put("category_id",65);
                 //向数据库插入第二条数据
                 database.insert("book",null,values);
                 values.clear();
@@ -189,6 +191,32 @@ public class MainActivity extends BaseActivity {
                     }while (cursor.moveToNext());
                 }
                 cursor.close();
+            }
+        });
+        //处理第六个按钮的事件
+        sixButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                database.beginTransaction();   //开启事务
+                try{
+                    database.delete("book",null,null);
+//                    if(true){
+//                        throw new NullPointerException();  //手动抛出异常，导致事务失败
+//                    }
+                    ContentValues contentValues=new ContentValues();
+                    contentValues.put("name","回到过去");
+                    contentValues.put("author","周杰伦");
+                    contentValues.put("price",25.3);
+                    contentValues.put("pages",652);
+                    database.insert("book",null,contentValues);
+                    database.setTransactionSuccessful();  //表示事务执行成功
+                    contentValues.clear();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }finally {
+                    database.endTransaction();
+                }
+
             }
         });
     }

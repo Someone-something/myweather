@@ -8,10 +8,11 @@ import android.widget.Toast;
 public class MyDatabaseSQLiteHelper extends SQLiteOpenHelper {
     public static final String CREATE_BOOK="create table book("
             + "id integer primary key autoincrement,"
+            + "name text,"
             + "author text,"
             + "price real,"
             + "pages integer,"
-            + "name text)";
+            + "category_id integer)";
     public static final String CREATE_CATEGORY="create table category("
             + "id integer primary key autoincrement,"
             + "category_name text,"
@@ -27,12 +28,18 @@ public class MyDatabaseSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_CATEGORY);
   //      Toast.makeText(mContext, "数据库已创建", Toast.LENGTH_SHORT).show();
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists book");
-        db.execSQL("drop table if exists category");
-         onCreate(db);
+//        db.execSQL("drop table if exists book");
+//        db.execSQL("drop table if exists category");
+//         onCreate(db);
+        switch (oldVersion){
+            case 1:
+                db.execSQL(CREATE_CATEGORY);
+            case 2:
+                db.execSQL("alter table book add column category_id integer");
+            default:
+        }
     }
 
 }
