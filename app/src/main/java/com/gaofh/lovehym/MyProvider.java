@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class MyProvider extends ContentProvider {
+    public static final int TABLE1=0;
+    public static final int TABLE2=1;
 
     @Override
     public boolean onCreate() {
