@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
@@ -167,7 +169,26 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 //把价格超过500的数据删掉
-                database.delete("book","price>?",new String[]{"500"});
+//                database.delete("book","price>?",new String[]{"500"});
+                //从小学同步的数据表取数据并打印出来
+                ContentResolver resolver=getContentResolver();
+                Uri uri=Uri.parse("content://com.noahedu.synclearning.provider/*");
+                Cursor cursor=resolver.query(uri,null,null,null,null);
+                if (cursor!=null) {
+                  Toast.makeText(MainActivity.this,"cursor不是空的",Toast.LENGTH_SHORT).show();
+                    try {
+                        while (cursor.moveToNext()) {
+                            @SuppressLint("Range") String bookId = cursor.getString(cursor.getColumnIndex("book_id"));
+                            Log.d("TGA", bookId);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                    } finally {
+                        cursor.close();
+
+                    }
+                }
             }
         });
         //处理第五个按钮的点击事件
