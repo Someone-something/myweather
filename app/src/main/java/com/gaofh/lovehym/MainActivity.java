@@ -1,8 +1,13 @@
 package com.gaofh.lovehym;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -10,13 +15,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.MediaParser;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,8 +39,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationCompatExtras;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,6 +58,7 @@ import java.net.NetworkInterface;
 
 
 public class MainActivity extends BaseActivity {
+     public static final int notificationId1=1;
      private Button firstButton;
      private Button secondButton;
      private Button thirdButton;
@@ -52,6 +71,7 @@ public class MainActivity extends BaseActivity {
      private MainBroadcastReceiver mainBroadcastReceive;
      private MyDatabaseSQLiteHelper dbHelper;
      private SQLiteDatabase database;
+     private Context context;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +89,14 @@ public class MainActivity extends BaseActivity {
         editText=(EditText) findViewById(R.id.firstedittext);
         dbHelper=new MyDatabaseSQLiteHelper(this,"BookStore.db",null,3);
         database=dbHelper.getWritableDatabase();
+        context=this;
+        /**
+         * 创建通知
+         */
+//      NotificationManager manager=(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//       Notification notification=new Notification();
+//       NotificationCompat.Builder builder=new NotificationCompat.Builder(this,notification);
+//       manager.notify(notificationId1,notification);
         if(getData()!=null){
           //  editText.setText(getData());
            // editText.setSelection(getData().length());
@@ -158,10 +186,58 @@ public class MainActivity extends BaseActivity {
 //                stringBuilder.append(age);
 //                editText.setText(stringBuilder.toString());
                 //更新数据库的数据
-                ContentValues values=new ContentValues();
-                values.put("price",1000);
-                database.update("book",values,"name=?",new String[]{"平凡的世界"});
-                values.clear();
+//                ContentValues values=new ContentValues();
+//                values.put("price",1000);
+//                database.update("book",values,"name=?",new String[]{"平凡的世界"});
+//                values.clear();
+                /**
+                 * 创建通知
+                 */
+                NotificationManagerCompat notificationManager=NotificationManagerCompat.from(context);
+                //申请通知的权限
+                if(ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)!= PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.POST_NOTIFICATIONS},1);
+                }
+                //判断SDK的版本是否大于28
+                if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+                    //以下是通知渠道的相关设置，安卓8以上的设备，无此设置就无法弹出通知
+                   String channelId="001";
+                   CharSequence channelName="name";
+                   String chanelDescription="来自QQ好友的消息";
+                   int importance=NotificationManager.IMPORTANCE_DEFAULT;
+                    NotificationChannel channel=new NotificationChannel(channelId,channelName,importance);
+                    channel.setDescription(chanelDescription);
+                    channel.enableVibration(true);
+                    channel.enableLights(true);
+                    notificationManager.createNotificationChannel(channel);
+                }
+                /**
+                 * 创建调整新闻界面的intent
+                 */
+                Intent intent=new Intent("com.gaofh.loveym.newsMainActivity_Action_START");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent=PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_IMMUTABLE);
+                /**
+                 *设置通知的铃声
+                 */
+                Uri uri=Uri.fromFile(new File("/storage/emulated/0/音乐播放器/拔萝卜.mp3"));
+                long [] vibrates={0,1000,1000,1000};
+             Notification notification= new NotificationCompat.Builder(MainActivity.this,"001")
+//                     .setStyle(new NotificationCompat.BigTextStyle().bigText("这是一个展开的大标题"))
+                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                     .setContentTitle("这是通知的标题")
+                     .setContentInfo("这是通知的信息")
+                     .setContentText("这是通知的文本")
+                     .setSound(uri)
+                     .setSmallIcon(R.drawable.enemy_head_01)
+                     .setContentIntent(pendingIntent)
+                     .setAutoCancel(true)
+                     .setLights(Color.RED,1000,2000)
+                     .setVibrate(vibrates)
+                     .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.enemy_head_04))
+                     .build();
+              notificationManager.notify(notificationId1,notification);
+//              Toast.makeText(context,"这是点了通知的按钮",Toast.LENGTH_SHORT).show();
             }
         });
         //处理第四个按钮的点击事件
