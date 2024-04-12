@@ -373,21 +373,23 @@ public class MainActivity extends BaseActivity {
                        intent.setDataAndType(imageUri,"image/*");
                        intent.putExtra("crop",true);
                        intent.putExtra("scale",true);
+                       intent.putExtra("return-data",true);
                        intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);  //加了这个获取权限的代码才能成功调用裁剪
                        startActivityForResult(intent,CROP_PHOTO);
                    }
                    break;
                case CROP_PHOTO:
-                  if(resultCode==RESULT_OK){
+//                  if(resultCode==RESULT_OK){
+
                       try {
-                          Toast.makeText(this,"裁剪成功的回调方法",Toast.LENGTH_SHORT).show();
+                          Toast.makeText(this,"裁剪成功的回调方法，resultCode是"+resultCode,Toast.LENGTH_SHORT).show();
                           Bitmap bitmap=BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
                           imageView.setImageBitmap(bitmap);
                       }catch (Exception e){
                           e.printStackTrace();
                       }
-                  }
+//                  }
                   break;
                default:
                    break;
@@ -399,9 +401,9 @@ public class MainActivity extends BaseActivity {
             ConnectivityManager connectivityManager=(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo=connectivityManager.getActiveNetworkInfo();
             if (networkInfo!=null&&networkInfo.isAvailable()){
-                Toast.makeText(context,"现在网络是正常的",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context,"现在网络是正常的",Toast.LENGTH_SHORT).show();
             }else {
-                Toast.makeText(context, "网络异常，请检查后再试试", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "网络异常，请检查后再试试", Toast.LENGTH_SHORT).show();
             }
             }
 
