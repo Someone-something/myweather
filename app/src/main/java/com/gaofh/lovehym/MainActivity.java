@@ -16,9 +16,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaParser;
@@ -29,6 +31,8 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -39,11 +43,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompatExtras;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -55,10 +61,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.NetworkInterface;
+import java.util.List;
 
 
 public class MainActivity extends BaseActivity {
      public static final int notificationId1=1;
+     public static final int TAKE_PHOTO=0;
+     public static final int CROP_PHOTO=3;
      private Button firstButton;
      private Button secondButton;
      private Button thirdButton;
@@ -68,6 +77,7 @@ public class MainActivity extends BaseActivity {
      private TextView title;
      private EditText editText;
      private ImageView imageView;
+     private Uri imageUri;
      private MainBroadcastReceiver mainBroadcastReceive;
      private MyDatabaseSQLiteHelper dbHelper;
      private SQLiteDatabase database;
@@ -87,6 +97,7 @@ public class MainActivity extends BaseActivity {
         sixButton=(Button) findViewById(R.id.sixbutton);
         title=(TextView) findViewById(R.id.title);
         editText=(EditText) findViewById(R.id.firstedittext);
+        imageView=(ImageView)findViewById(R.id.imageView);
         dbHelper=new MyDatabaseSQLiteHelper(this,"BookStore.db",null,3);
         database=dbHelper.getWritableDatabase();
         context=this;
@@ -156,7 +167,33 @@ public class MainActivity extends BaseActivity {
                 /**
                  *创建数据库book
                  */
-                dbHelper.getWritableDatabase();
+//                dbHelper.getWritableDatabase();
+                /**
+                 * 调用摄像头拍照，并把照片显示在ImageView
+                 */
+              if(ContextCompat.checkSelfPermission(context,Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED){
+                  ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.CAMERA},1);
+                  ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+                  ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+              }
+              File outputImage=new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),"tempImage.jpg");
+//                File outputImage=new File(Environment.getExternalStorageDirectory(),"tempImage.jpg");
+              String paths=outputImage.toString();
+              Log.d("gaofh",paths);
+                  try {
+                      if (outputImage.exists()){
+                          outputImage.delete();
+                      }
+                      outputImage.createNewFile();
+                  }catch (Exception e){
+                      e.printStackTrace();
+              }
+                  imageUri= FileProvider.getUriForFile(context,"com.gaofh.lovehym.provider",outputImage);
+                  String string=imageUri.toString();
+                  Log.d("gaofh",string);
+                  Intent intent=new Intent("android.media.action.IMAGE_CAPTURE");
+                  intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                  startActivityForResult(intent,TAKE_PHOTO);
             }
         });
         //处理第三个按钮的点击事件
@@ -316,6 +353,45 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+    }
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+           switch (requestCode){
+               case TAKE_PHOTO:
+                   if(resultCode==RESULT_OK){
+                       /**
+                        *先获得裁剪的权限
+                        */
+//                       Toast.makeText(this,"拍照成功的回调方法",Toast.LENGTH_SHORT).show();
+//                       List<ResolveInfo> resolveInfo=getPackageManager().queryIntentActivities(data,PackageManager.MATCH_DEFAULT_ONLY);
+//                       for(ResolveInfo info:resolveInfo){
+//                           String packagename=info.activityInfo.packageName;
+//                           Log.d("GAO",packagename);
+//                           grantUriPermission(packagename,imageUri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                       }
+                       Intent intent=new Intent("com.android.camera.action.CROP");
+                       intent.setDataAndType(imageUri,"image/*");
+                       intent.putExtra("crop",true);
+                       intent.putExtra("scale",true);
+                       intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                       intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);  //加了这个获取权限的代码才能成功调用裁剪
+                       startActivityForResult(intent,CROP_PHOTO);
+                   }
+                   break;
+               case CROP_PHOTO:
+                  if(resultCode==RESULT_OK){
+                      try {
+                          Toast.makeText(this,"裁剪成功的回调方法",Toast.LENGTH_SHORT).show();
+                          Bitmap bitmap=BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                          imageView.setImageBitmap(bitmap);
+                      }catch (Exception e){
+                          e.printStackTrace();
+                      }
+                  }
+                  break;
+               default:
+                   break;
+           }
     }
     public class MainBroadcastReceiver extends BroadcastReceiver {
         @Override
