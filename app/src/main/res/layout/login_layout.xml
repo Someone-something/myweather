@@ -38,11 +38,6 @@
                android:text="登录"
                android:textSize="24sp"/>
     </TableRow>
-    <ProgressBar android:id="@+id/login_activity_progressBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/progress_bar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-            />
+
 
 </TableLayout>

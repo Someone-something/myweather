@@ -1,15 +1,18 @@
 package com.gaofh.lovehym;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
+import androidx.appcompat.app.AlertDialog;
+
 public class DownloadTask extends BackgroundTask {
     public Context context;
-    public ProgressBar progressBar;
+    public AlertDialog alertDialog;
     public DownloadTask(Context context){
         super(context);
         this.context=context;
@@ -17,10 +20,25 @@ public class DownloadTask extends BackgroundTask {
 
     @Override
     protected void onPreExecute() {
-        progressBar= LayoutInflater.from(context).inflate(R.layout.login_layout,null).findViewById(R.id.login_activity_progressBar);
-        progressBar.setProgress(50);
-        progressBar.setMax(100);
-        progressBar.setVisibility(View.INVISIBLE);
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        builder.setView(R.layout.progress_bar_layout);
+        builder.setCancelable(true);
+        builder.setTitle("提示");
+        builder.setMessage("数据下载中....");
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.cancel();
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.cancel();
+            }
+        });
+        alertDialog=builder.create();
+        alertDialog.show();
     }
 
     @Override
