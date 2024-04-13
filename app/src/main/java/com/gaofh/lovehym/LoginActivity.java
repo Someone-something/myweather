@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class LoginActivity extends BaseActivity{
@@ -23,6 +24,9 @@ public class LoginActivity extends BaseActivity{
         passwordEdit=(EditText) findViewById(R.id.password_editText);
         loginButton=(Button) findViewById(R.id.login_button);
         checkBox=(CheckBox)findViewById(R.id.login_activity_checkBox);
+        DownloadTask downloadTask=new DownloadTask(this);
+        downloadTask.onPreExecute();
+        downloadTask.executeOnExecutor();
         pref=getSharedPreferences("账号信息",MODE_PRIVATE);
         boolean isRemember=pref.getBoolean("isRemember",false);
         if (isRemember){
