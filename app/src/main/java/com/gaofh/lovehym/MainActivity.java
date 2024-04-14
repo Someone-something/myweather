@@ -9,12 +9,14 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -34,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -79,6 +82,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      private Button fourButton;
      private Button fiveButton;
      private Button sixButton;
+     private Button sevenButton;
+     private Button eightButton;
      private TextView title;
      private EditText editText;
      private ImageView imageView;
@@ -88,8 +93,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      private SQLiteDatabase database;
      private Context context;
      private Handler mHandler;
+     private MyService.DownloadBinder downloadBinder;
+     private ServiceConnection serviceConnection=new ServiceConnection() {
+         @Override
+         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+             downloadBinder=(MyService.DownloadBinder)iBinder;
+             downloadBinder.startDownload();
+             downloadBinder.getProgress();
+         }
 
-
+         @Override
+         public void onServiceDisconnected(ComponentName componentName) {
+            downloadBinder.finishDownload();
+         }
+     };
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -101,6 +118,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         fourButton=(Button) findViewById(R.id.fourbutton);
         fiveButton=(Button) findViewById(R.id.fivebutton);
         sixButton=(Button) findViewById(R.id.sixbutton);
+        sevenButton=(Button) findViewById(R.id.sevenbutton);
+        eightButton=(Button) findViewById(R.id.eightbutton);
         title=(TextView) findViewById(R.id.title);
         editText=(EditText) findViewById(R.id.firstedittext);
         imageView=(ImageView)findViewById(R.id.imageView);
@@ -156,6 +175,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         fiveButton.setOnClickListener(this);
         //处理第六个按钮的事件
         sixButton.setOnClickListener(this);
+        //处理第七个按钮的事件
+        sevenButton.setOnClickListener(this);
+        //处理第八个按钮的事件
+        eightButton.setOnClickListener(this);
     }
     @Override
     protected void onActivityResult(int requestCode,int resultCode,Intent data) {
@@ -388,24 +411,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //把价格超过500的数据删掉
 //                database.delete("book","price>?",new String[]{"500"});
         //从小学同步的数据表取数据并打印出来
-        ContentResolver resolver=getContentResolver();
-        Uri syncUri=Uri.parse("content://com.noahedu.synclearning.provider/*");
-        Cursor cursor=resolver.query(syncUri,null,null,null,null);
-        if (cursor!=null) {
-            Toast.makeText(MainActivity.this,"cursor不是空的",Toast.LENGTH_SHORT).show();
-            try {
-                while (cursor.moveToNext()) {
-                    @SuppressLint("Range") String bookId = cursor.getString(cursor.getColumnIndex("book_id"));
-                    Log.d("TGA", bookId);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-
-            } finally {
-                cursor.close();
-
-            }
-        }
+//        ContentResolver resolver=getContentResolver();
+//        Uri syncUri=Uri.parse("content://com.noahedu.synclearning.provider/*");
+//        Cursor cursor=resolver.query(syncUri,null,null,null,null);
+//        if (cursor!=null) {
+//            Toast.makeText(MainActivity.this,"cursor不是空的",Toast.LENGTH_SHORT).show();
+//            try {
+//                while (cursor.moveToNext()) {
+//                    @SuppressLint("Range") String bookId = cursor.getString(cursor.getColumnIndex("book_id"));
+//                    Log.d("TGA", bookId);
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//
+//            } finally {
+//                cursor.close();
+//
+//            }
+//        }
+                /**
+                 * 启动服务
+                 */
+                Intent startServiceIntent=new Intent(this,MyService.class);
+                startService(startServiceIntent);
                 break;
             case R.id.fivebutton:
     //查询数据
@@ -425,17 +453,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //        }while (queryCursor.moveToNext());
 //    }
 //                queryCursor.close();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                  Message message=new Message();
-                  message.what=1;
-                  Bundle bundle=new Bundle();
-                  bundle.putString("gaofh","这是子线程发送的一条消息");
-                  message.setData(bundle);
-                  mHandler.sendMessage(message);
-                    }
-                }).start();
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                  Message message=new Message();
+//                  message.what=1;
+//                  Bundle bundle=new Bundle();
+//                  bundle.putString("gaofh","这是子线程发送的一条消息");
+//                  message.setData(bundle);
+//                  mHandler.sendMessage(message);
+//                    }
+//                }).start();
+                /**
+                 * 停止服务
+                 */
+                Intent stopServiceIntent=new Intent(this,MyService.class);
+                stopService(stopServiceIntent);
                 break;
             case R.id.sixbutton:
                         database.beginTransaction();   //开启事务
@@ -457,6 +490,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         }finally {
                         database.endTransaction();
                         }
+                break;
+            case R.id.sevenbutton:
+                 Intent bindService=new Intent(this,MyService.class);
+                 bindService(bindService,serviceConnection,BIND_AUTO_CREATE);
+                break;
+            case R.id.eightbutton:
+                 try {
+                     unbindService(serviceConnection);
+                 }catch (Exception e){
+                     Log.d("GAO","服务已经解绑了");
+                 }
+                break;
+            default:
                 break;
         }
           }

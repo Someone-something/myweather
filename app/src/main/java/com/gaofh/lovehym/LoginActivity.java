@@ -16,6 +16,7 @@ public class LoginActivity extends BaseActivity{
     private Button loginButton;
     private CheckBox checkBox;
     private SharedPreferences pref;
+    public DownloadTask downloadTask;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -24,9 +25,8 @@ public class LoginActivity extends BaseActivity{
         passwordEdit=(EditText) findViewById(R.id.password_editText);
         loginButton=(Button) findViewById(R.id.login_button);
         checkBox=(CheckBox)findViewById(R.id.login_activity_checkBox);
-        DownloadTask downloadTask=new DownloadTask(this);
-        downloadTask.onPreExecute();
-        downloadTask.executeOnExecutor();
+        downloadTask=new DownloadTask(this);
+        downloadTask.execute();
         pref=getSharedPreferences("账号信息",MODE_PRIVATE);
         boolean isRemember=pref.getBoolean("isRemember",false);
         if (isRemember){
@@ -61,6 +61,12 @@ public class LoginActivity extends BaseActivity{
 
             }
         });
+
+    }
+    @Override
+    public void onDestroy(){
+        downloadTask.cancel(true);
+        super.onDestroy();
 
     }
 }
