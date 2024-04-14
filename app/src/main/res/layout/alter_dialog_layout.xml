@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+<TextView
+    android:id="@+id/alert_dialog_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="24sp"
+    android:gravity="center"
+    android:textColor="@color/black"
+    android:paddingTop="20dp"
+    android:text="提示"
+    />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        />
+    <TextView
+        android:id="@+id/alert_dialog_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="正在加载试卷，请稍后"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:paddingBottom="20dp"/>
+
+
+</LinearLayout>

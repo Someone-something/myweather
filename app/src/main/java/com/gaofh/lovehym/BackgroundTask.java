@@ -3,6 +3,7 @@ package com.gaofh.lovehym;
 import android.content.Context;
 import android.os.Handler;
 
+import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,5 +72,4 @@ public abstract class BackgroundTask {
     protected abstract void onPreExecute();
     protected abstract String doInBackground(Integer...params);
     protected abstract void onPostExecute(String result);
-
 }

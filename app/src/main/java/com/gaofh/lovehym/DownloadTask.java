@@ -3,52 +3,113 @@ package com.gaofh.lovehym;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
-public class DownloadTask extends BackgroundTask {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class DownloadTask extends AsyncTask<Void,String,Boolean> {
     public Context context;
     public AlertDialog alertDialog;
+    public AlertDialog.Builder builder;
+    public TextView textView;
+    public String currentTime;
+    public Date date;
+    public SimpleDateFormat dateFormat;
     public DownloadTask(Context context){
-        super(context);
+        super();
         this.context=context;
     }
 
     @Override
     protected void onPreExecute() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        builder.setView(R.layout.progress_bar_layout);
+        date=new Date();
+        dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        currentTime=dateFormat.format(date);
+        builder=new AlertDialog.Builder(context);
+        View view=LayoutInflater.from(context).inflate(R.layout.alter_dialog_layout,null);
         builder.setCancelable(true);
-        builder.setTitle("提示");
-        builder.setMessage("数据下载中....");
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                alertDialog.cancel();
-            }
-        });
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                alertDialog.cancel();
-            }
-        });
+        builder.setTitle("提示信息");
+        builder.setMessage("这是弹框的详细信息");
+//        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                alertDialog.cancel();
+//            }
+//        });
+//        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                alertDialog.cancel();
+//            }
+//        });
         alertDialog=builder.create();
         alertDialog.show();
+        Log.d("GAO","这是onPreExecute方法主线程"+Thread.currentThread().toString());
+        alertDialog.getWindow().setContentView(view);
+        textView=view.findViewById(R.id.alert_dialog_message);
+    }
+    @Override
+    protected Boolean doInBackground(Void... voids) {
+        int max=2;
+        int start=0;
+        while (true) {
+            if (start<max){
+                start++;
+                date=new Date();
+            currentTime = dateFormat.format(date);
+                Log.d("GAO","这是doInBackground子线程"+Thread.currentThread().toString());
+            // onProgressUpdate(currentTime);
+            publishProgress(currentTime);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }}else {
+                break;
+            }
+        }
+        return true ;
+    }
+    @Override
+    protected void onProgressUpdate(String...values){
+//        Log.d("GAO","这是在执行doProgressUpdate方法");
+//        Log.d("GAO",currentTime);
+        alertDialog.setMessage(currentTime);
+        Log.d("GAO","这是onProgressUpdate主线程"+Thread.currentThread().toString());
+        textView.setText("数据马上就加载完成了，再等等");
+
+    }
+    @Override
+    protected void onPostExecute(Boolean result){
+//        Log.d("GAO","这是在执行PostExecute方法");
+        Log.d("GAO","这是onPostExecute主线程"+Thread.currentThread().toString());
+
+        alertDialog.cancel();
+
+
     }
 
-    @Override
     protected String doInBackground(Integer... params) {
-        return null;
+        new Thread(new Runnable() {
+           @Override
+           public void run() {
+               currentTime=new Date().toString();
+           }
+       }).start();
+        for (int i=1;i<5;i++){
+            currentTime=new Date().toString();
+        }
+        return currentTime;
     }
 
-    @Override
     protected void onPostExecute(String result) {
-
+      textView.setText(currentTime+result);
     }
 
 }
