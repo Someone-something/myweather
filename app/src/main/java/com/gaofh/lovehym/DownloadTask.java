@@ -71,6 +71,7 @@ public class DownloadTask extends AsyncTask<Void,String,Boolean> {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }}else {
+                Thread.currentThread().interrupt();//停止子线程
                 break;
             }
         }
