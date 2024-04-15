@@ -471,29 +471,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 stopService(stopServiceIntent);
                 break;
             case R.id.sixbutton:
-                        database.beginTransaction();   //开启事务
-                        try{
-                        database.delete("book",null,null);
-//                    if(true){
-//                        throw new NullPointerException();  //手动抛出异常，导致事务失败
-//                    }
-                        ContentValues contentValues=new ContentValues();
-                        contentValues.put("name","回到过去");
-                        contentValues.put("author","周杰伦");
-                        contentValues.put("price",25.3);
-                        contentValues.put("pages",652);
-                        database.insert("book",null,contentValues);
-                        database.setTransactionSuccessful();  //表示事务执行成功
-                        contentValues.clear();
-                        }catch (Exception e){
-                        e.printStackTrace();
-                        }finally {
-                        database.endTransaction();
-                        }
-                break;
+//                        database.beginTransaction();   //开启事务
+//                        try{
+//                        database.delete("book",null,null);
+////                    if(true){
+////                        throw new NullPointerException();  //手动抛出异常，导致事务失败
+////                    }
+//                        ContentValues contentValues=new ContentValues();
+//                        contentValues.put("name","回到过去");
+//                        contentValues.put("author","周杰伦");
+//                        contentValues.put("price",25.3);
+//                        contentValues.put("pages",652);
+//                        database.insert("book",null,contentValues);
+//                        database.setTransactionSuccessful();  //表示事务执行成功
+//                        contentValues.clear();
+//                        }catch (Exception e){
+//                        e.printStackTrace();
+//                        }finally {
+//                        database.endTransaction();
+//                        }
+                Log.d(BaseActivity.TGA,"这是MainActivity的主线程id："+Thread.currentThread().getId());
+                Intent intent1=new Intent(this,MyIntentService.class);
+                startService(intent1);
+               break;
             case R.id.sevenbutton:
-                 Intent bindService=new Intent(this,MyService.class);
-                 bindService(bindService,serviceConnection,BIND_AUTO_CREATE);
+//                 Intent bindService=new Intent(this,MyService.class);
+//                 bindService(bindService,serviceConnection,BIND_AUTO_CREATE);
+                Intent startLRService=new Intent(this,LongRunningService.class);
+                startService(startLRService);
                 break;
             case R.id.eightbutton:
                  try {

@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -90,6 +92,10 @@
                 <action android:name="com.gaofh.loveHym.ForcerOfflineReceiver" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".AlarmReceiver"
+            android:exported="true">
+
+        </receiver>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -100,6 +106,12 @@
                 android:resource="@xml/file_paths"/>
         </provider>
         <service android:name=".MyService">
+
+        </service>
+        <service android:name=".MyIntentService">
+
+        </service>
+        <service android:name=".LongRunningService">
 
         </service>
     </application>
