@@ -1,5 +1,6 @@
 package com.gaofh.lovehym;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -54,6 +55,7 @@ public class DownloadTask extends AsyncTask<Void,String,Boolean> {
         alertDialog.getWindow().setContentView(view);
         textView=view.findViewById(R.id.alert_dialog_message);
     }
+    @SuppressLint("SuspiciousIndentation")
     @Override
     protected Boolean doInBackground(Void... voids) {
         int max=2;
