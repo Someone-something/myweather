@@ -501,11 +501,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startService(startLRService);
                 break;
             case R.id.eightbutton:
-                 try {
-                     unbindService(serviceConnection);
-                 }catch (Exception e){
-                     Log.d("GAO","服务已经解绑了");
-                 }
+//                 try {
+//                     unbindService(serviceConnection);
+//                 }catch (Exception e){
+//                     Log.d("GAO","服务已经解绑了");
+//                 }
+                Intent intent2=new Intent("com.gaofh.lovehym.WebView.Activity.Action");
+                startActivity(intent2);
                 break;
             default:
                 break;
