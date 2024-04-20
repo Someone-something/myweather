@@ -26,6 +26,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaParser;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -51,6 +54,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompatExtras;
@@ -94,6 +98,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      private Context context;
      private Handler mHandler;
      private MyService.DownloadBinder downloadBinder;
+     private String provider;
+     private LocationManager locationManager;
      private ServiceConnection serviceConnection=new ServiceConnection() {
          @Override
          public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -105,6 +111,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
          @Override
          public void onServiceDisconnected(ComponentName componentName) {
             downloadBinder.finishDownload();
+         }
+     };
+     private LocationListener listener=new LocationListener() {
+         @Override
+         public void onLocationChanged(@NonNull Location location) {
+          showLocation(location);
          }
      };
     protected void onCreate(Bundle savedInstanceState) {
@@ -432,8 +444,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 /**
                  * 启动服务
                  */
-                Intent startServiceIntent=new Intent(this,MyService.class);
-                startService(startServiceIntent);
+//                Intent startServiceIntent=new Intent(this,MyService.class);
+//                startService(startServiceIntent);
+                locationManager=(LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                List<String> providerList=locationManager.getProviders(true);
+                if(providerList.contains(LocationManager.GPS_PROVIDER)){
+                    provider=LocationManager.GPS_PROVIDER;
+                }else if(providerList.contains(LocationManager.NETWORK_PROVIDER)){
+                    provider=LocationManager.NETWORK_PROVIDER;
+                }else {
+                    Toast.makeText(this,"当前设备不支持定位",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Location location=locationManager.getLastKnownLocation(provider);
+                if(location!=null){
+                    Toast.makeText(this,"正在获取地址",Toast.LENGTH_SHORT).show();
+                    showLocation(location);
+                }
+                locationManager.requestLocationUpdates(provider, 1000, 1, listener);
                 break;
             case R.id.fivebutton:
     //查询数据
@@ -513,7 +541,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
         }
           }
-
+      private void showLocation(Location location){
+        String currentLocation="当前位置的纬度是："+location.getLatitude()+",当前经度是："+location.getLongitude();
+        Toast.makeText(this,"正在获取地址",Toast.LENGTH_SHORT).show();
+        title.setText(currentLocation);
+      }
     public class MainBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context,Intent intent){
@@ -603,6 +635,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         unregisterReceiver(mainBroadcastReceive);
         String saveString=editText.getText().toString();
         saveData(saveString);
+        if (locationManager!=null){
+            locationManager.removeUpdates(listener);
+        }
 //        Toast.makeText(this, "这是在执行onDestroy的方法", Toast.LENGTH_SHORT).show();
     }
 
