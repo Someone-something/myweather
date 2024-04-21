@@ -495,8 +495,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 /**
                  * 停止服务
                  */
-                Intent stopServiceIntent=new Intent(this,MyService.class);
-                stopService(stopServiceIntent);
+//                Intent stopServiceIntent=new Intent(this,MyService.class);
+//                stopService(stopServiceIntent);
+                /**
+                 * 启动百度地图的activity
+                 */
+                Intent baiduMapIntent=new Intent("com.gaofh.lovehym.BaiduMap.Activity.Action");
+                startActivity(baiduMapIntent);
                 break;
             case R.id.sixbutton:
 //                        database.beginTransaction();   //开启事务

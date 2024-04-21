@@ -20,9 +20,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-feature android:name="android.hardware.camera" />
 
     <application
+        android:name=".MyApplication"
+        android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -37,6 +40,9 @@
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/file_paths" />
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="ORW5bonRIztOc26ExiTY6crbNe8Q0UlU"/>
 
         <activity
             android:name=".LoginActivity"
@@ -85,6 +91,14 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <activity android:name=".BaiduMapActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.gaofh.lovehym.BaiduMap.Activity.Action"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
 
         <receiver
             android:name=".BootCompleteReceiver"
@@ -129,6 +143,11 @@
         <service android:name=".LongRunningService">
 
         </service>
+        <service android:name="com.baidu.location.f"
+            android:exported="true"
+            android:process=".remote"/>
     </application>
+
+
 
 </manifest>
