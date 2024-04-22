@@ -1,6 +1,8 @@
 package com.gaofh.lovehym;
 
-public class News {
+import java.io.Serializable;
+
+public class News implements Serializable {
     String title;
     String content;
     public News(String title,String content){

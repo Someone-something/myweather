@@ -83,6 +83,11 @@ public class WebViewActivity extends Activity implements View.OnClickListener {
                 }
             }
         };
+        //获取从MainActivity传递过来的数据
+        Msg msg=(Msg) getIntent().getParcelableExtra("msgs");
+        News news=(News)getIntent().getSerializableExtra("news");
+        LogUtil.d("GAO","Msg输出的Content是："+msg.getContent()+",输出的type是："+msg.getType());
+        LogUtil.d("GAO","news输出的title是："+news.getTitle()+",输出的content是："+news.getContent());
     }
     @Override
     public void onClick(View view){

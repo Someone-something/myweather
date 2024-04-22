@@ -51,7 +51,7 @@ public class DownloadTask extends AsyncTask<Void,String,Boolean> {
 //        });
         alertDialog=builder.create();
         alertDialog.show();
-        Log.d("GAO","这是onPreExecute方法主线程id:"+Thread.currentThread().getId());
+        LogUtil.d("GAO","这是onPreExecute方法主线程id:"+Thread.currentThread().getId());
         alertDialog.getWindow().setContentView(view);
         textView=view.findViewById(R.id.alert_dialog_message);
     }
@@ -65,7 +65,7 @@ public class DownloadTask extends AsyncTask<Void,String,Boolean> {
                 start++;
                 date=new Date();
             currentTime = dateFormat.format(date);
-                Log.d("GAO","这是doInBackground子线程id:"+Thread.currentThread().getId());
+                LogUtil.d("GAO","这是doInBackground子线程id:"+Thread.currentThread().getId());
             // onProgressUpdate(currentTime);
             publishProgress(currentTime);
             try {
@@ -84,14 +84,14 @@ public class DownloadTask extends AsyncTask<Void,String,Boolean> {
 //        Log.d("GAO","这是在执行doProgressUpdate方法");
 //        Log.d("GAO",currentTime);
         alertDialog.setMessage(currentTime);
-        Log.d("GAO","这是onProgressUpdate主线程id:"+Thread.currentThread().getId());
+        LogUtil.d("GAO","这是onProgressUpdate主线程id:"+Thread.currentThread().getId());
         textView.setText("数据马上就加载完成了，再等等");
 
     }
     @Override
     protected void onPostExecute(Boolean result){
 //        Log.d("GAO","这是在执行PostExecute方法");
-        Log.d("GAO","这是onPostExecute主线程id:"+Thread.currentThread().getId());
+        LogUtil.d("GAO","这是onPostExecute主线程id:"+Thread.currentThread().getId());
 
         alertDialog.cancel();
 

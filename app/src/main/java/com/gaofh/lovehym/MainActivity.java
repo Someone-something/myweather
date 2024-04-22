@@ -540,6 +540,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                     Log.d("GAO","服务已经解绑了");
 //                 }
                 Intent intent2=new Intent("com.gaofh.lovehym.WebView.Activity.Action");
+                News news=new News();
+                news.setContent("内容");
+                news.setTitle("标题");
+                Msg msg=new Msg("内容",1);
+                intent2.putExtra("msgs",msg);
+                intent2.putExtra("news",news); //实现了序列化的类才能传递
                 startActivity(intent2);
                 break;
             default:
