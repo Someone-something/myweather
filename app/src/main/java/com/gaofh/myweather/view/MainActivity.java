@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.gaofh.myweather.R;
 import com.gaofh.myweather.gson.ParseJSONWithGSON;
@@ -24,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
     public static final int MSG_1=1;    //判断网络请求工作已完成
     private TextView textView;
     private Weather weather;
@@ -34,9 +35,8 @@ public class MainActivity extends Activity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_layout);
-        textView=(TextView)findViewById(R.id.testView);
         //执行获取天气的对象的方法
-        getWeather();
+       // getWeather();
         handler=new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(@NonNull Message message) {
