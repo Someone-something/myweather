@@ -15,7 +15,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import okhttp3.OkHttpClient;
+
 public class HttpUtil {
+    /**
+     *使用okhttp请求数据
+     */
+    public static void sendOkHttpRequest(String address){
+
+    }
     /**
      * 拼接url
      */
