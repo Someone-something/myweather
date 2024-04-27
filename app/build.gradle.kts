@@ -34,10 +34,12 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(files("libs\\gson-2.10.1.jar"))
+    implementation("com.squareup.okhttp3:okhttp:3.4.1")
+    implementation("com.github.bumptech.glide:glide:3.7.0")
+    implementation(files("libs\\litepal-1.3.2.jar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
