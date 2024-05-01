@@ -60,6 +60,7 @@ public class Utility {
      * 解析和处理服务器返回的县、区JSON数据
      */
     public static boolean handleCountyResponse(String response,int cityId){
+        LogUtil.d("GAO----handleCountyResponse方法",response);
         if(!TextUtils.isEmpty(response)){
             try {
                 JSONArray allCounties=new JSONArray(response);
@@ -67,7 +68,7 @@ public class Utility {
                     JSONObject countyObject=allCounties.getJSONObject(i);
                     County county=new County();
                     county.setCountyName(countyObject.getString("name"));
-                    county.setWeatherId(countyObject.getInt("weather_id"));
+                    county.setWeatherId(countyObject.getString("weather_id"));
                     county.setCityId(cityId);
                     county.save();
                 }
