@@ -1,6 +1,7 @@
 package com.gaofh.myweather.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,6 +68,10 @@ public class ChooseAreaFragment extends Fragment {
      */
     private City selectedCity;
     /**
+     *
+     */
+    private County selectedCounty;
+    /**
      * 当前选择的级别
      */
     private int currentLevel;
@@ -94,6 +99,13 @@ public class ChooseAreaFragment extends Fragment {
                     selectedCity=cityList.get(i);
                     //执行查询当前选中的城市对应的县、区列表
                     queryCounties();
+                }else if (currentLevel==LEVEL_COUNTY){
+                    selectedCounty=countyList.get(i);
+                    String weatherId=selectedCounty.getWeatherId();
+                    Intent intent=new Intent("com.gaofh.myweather.weather.activity");
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
