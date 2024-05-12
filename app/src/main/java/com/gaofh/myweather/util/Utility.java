@@ -93,4 +93,20 @@ public class Utility {
         }
         return null;
     }
+    /**
+     * 解析返回图片的JSON数据，并返回图片的url地址
+     */
+    public static String handleBingPicResponse(String response){
+        try {
+            JSONObject jsonObject=new JSONObject(response);
+            JSONArray jsonArray=jsonObject.getJSONArray("images");
+            JSONObject object=jsonArray.getJSONObject(0);
+            String imageUrl=object.getString("url");
+            String bingPic=UrlUtil.bingPic+imageUrl;
+            return bingPic;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

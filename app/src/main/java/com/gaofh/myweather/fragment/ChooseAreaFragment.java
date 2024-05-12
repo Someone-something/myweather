@@ -25,6 +25,8 @@ import com.gaofh.myweather.util.HttpUtil;
 import com.gaofh.myweather.util.LogUtil;
 import com.gaofh.myweather.util.UrlUtil;
 import com.gaofh.myweather.util.Utility;
+import com.gaofh.myweather.view.MainActivity;
+import com.gaofh.myweather.view.WeatherActivity;
 
 import org.json.JSONException;
 import org.litepal.crud.DataSupport;
@@ -102,10 +104,17 @@ public class ChooseAreaFragment extends Fragment {
                 }else if (currentLevel==LEVEL_COUNTY){
                     selectedCounty=countyList.get(i);
                     String weatherId=selectedCounty.getWeatherId();
-                    Intent intent=new Intent("com.gaofh.myweather.weather.activity");
-                    intent.putExtra("weather_id",weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    if(getActivity()instanceof MainActivity) {
+                        Intent intent = new Intent("com.gaofh.myweather.weather.activity");
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else if(getActivity()instanceof WeatherActivity){
+                        WeatherActivity weatherActivity=(WeatherActivity) getActivity();
+                        weatherActivity.drawerLayout.closeDrawers();
+                        weatherActivity.swipeRefresh.setRefreshing(true);
+                        weatherActivity.requestWeather(weatherId);
+                    }
                 }
             }
         });
@@ -206,6 +215,7 @@ public class ChooseAreaFragment extends Fragment {
                         //执行关掉加载框的方法
                          closeProgressDialog();
                         Toast.makeText(getContext(),"加载失败",Toast.LENGTH_SHORT).show();
+                        getActivity().finish();
                     }
                 });
             }

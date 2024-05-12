@@ -6,4 +6,7 @@ public class UrlUtil {
     public static String countyUrl="http://guolin.tech/api/china/16/116"; //在市的基础上加上id，列举当前城市对应的县、区
     public static String weatherUrl="http://guolin.tech/api/weather";
     public static String weatherKey="85137a95d3004e109e56c63433a757b2";
+    public static String bingPic="http://cn.bing.com";
+    public static String requestBingPic="https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1";
+
 }
